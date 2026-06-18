@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { ShopHomePage } from '../pages/automationExercise/ShopHomePage';
 import { SignupLoginPage } from '../pages/automationExercise/SignupLoginPage';
 import { AccountCreationPage, Title } from '../pages/automationExercise/AccountCreationPage';
@@ -9,6 +9,7 @@ import { PaymentPage } from '../pages/automationExercise/PaymentPage';
 import { PaymentConfirmationPage } from '../pages/automationExercise/PaymentConfirmationPage';
 import { label, epic, feature, story, severity, Severity } from 'allure-js-commons';
 import { ProductDetailPage } from '../pages/automationExercise/ProductDetailPage';
+import { ShopApiClient } from '../utils/shopApiClient';
 
 test.describe('TC-SHOP', () => {
     // TC-SHOP-001
@@ -168,13 +169,32 @@ test.describe('TC-SHOP', () => {
     });
 
     // TC-SHOP-006
-    test('API: GET /api/productsList returns a valid product list', async ({ page }) => {
+    test('API: GET /api/productsList returns a valid product list', async ({ request }) => {
         await label('Priority', 'P1');
         await epic('API');
         await feature('Products API');
         await story('List all products');
         await severity(Severity.CRITICAL);
 
+        const shopApiClient = new ShopApiClient(request);
+        const productsList = await shopApiClient.getAllProducts();
+
+        expect(productsList.responseCode).toBe(200);
+
+        expect(Array.isArray(productsList.products)).toBe(true);
+        expect(productsList.products.length).toBeGreaterThan(0);
+
+        for (const product of productsList.products) {
+            expect(product.id).toBeDefined();
+            expect(product.name).toBeDefined();
+            expect(product.price).toBeDefined();
+            expect(product.brand).toBeDefined();
+            expect(product.category).toBeDefined();
+        }
+
+        const ids = productsList.products.map(product => product.id);
+        const uniqueIds = new Set(ids);
+        expect(uniqueIds.size).toBe(ids.length);
     });
 
     // TC-SHOP-007
