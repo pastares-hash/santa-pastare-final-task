@@ -209,7 +209,6 @@ test.describe('TC-SHOP', () => {
         const searchProducts = await shopApiClient.searchProduct('top');
 
         expect(searchProducts.responseCode).toBe(200);
-        console.log(searchProducts);
         expect(searchProducts.products.length).toBeGreaterThan(0);
 
         for (const product of searchProducts.products) {
@@ -218,13 +217,18 @@ test.describe('TC-SHOP', () => {
     });
 
     // TC-SHOP-008
-    test('API: POST /api/searchProduct with missing parameter returns 400', async ({ page }) => {
+    test('API: POST /api/searchProduct with missing parameter returns 400', async ({ request }) => {
         await label('Priority', 'P2');
         await epic('API');
         await feature('Products API');
         await story('Missing parameter');
         await severity(Severity.MINOR);
     
+        const shopApiClient = new ShopApiClient(request);
+        const searchProducts = await shopApiClient.searchProduct();
+
+        expect(searchProducts.responseCode).toBe(400);
+        expect(searchProducts.message).toContain('Bad request, search_product parameter is missing in POST request');
     });
 
     // TC-SHOP-009
