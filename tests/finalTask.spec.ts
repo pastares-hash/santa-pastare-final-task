@@ -198,13 +198,23 @@ test.describe('TC-SHOP', () => {
     });
 
     // TC-SHOP-007
-    test('API: POST /api/searchProduct returns matching results', async ({ page }) => {
+    test('API: POST /api/searchProduct returns matching results', async ({ request }) => {
         await label('Priority', 'P1');
         await epic('API');
         await feature('Products API');
         await story('Search products');
         await severity(Severity.NORMAL);
 
+        const shopApiClient = new ShopApiClient(request);
+        const searchProducts = await shopApiClient.searchProduct('top');
+
+        expect(searchProducts.responseCode).toBe(200);
+        console.log(searchProducts);
+        expect(searchProducts.products.length).toBeGreaterThan(0);
+
+        for (const product of searchProducts.products) {
+            expect(product.name.toLowerCase()).toContain('top');
+        }
     });
 
     // TC-SHOP-008

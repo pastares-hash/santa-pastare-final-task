@@ -26,6 +26,23 @@ export class ShopApiClient {
 
     async getAllProducts(): Promise<ProductsList> {
         const response = await this.request.get(`${this.BASE_URL}/productsList`);
-        return await response.json();
+        const body = await response.json();
+        
+        if (!response.ok()) throw new Error(`fetch failed ${response.status()}: ${JSON.stringify(body)}`)
+
+        return body as ProductsList;
+    }
+
+    async searchProduct(data: string): Promise<ProductsList> {
+        const response = await this.request.post(`${this.BASE_URL}/searchProduct`, {
+            form: {
+                search_product: data
+            }
+        });
+
+        const body = await response.json();
+        if (!response.ok()) throw new Error(`search failed ${response.status()}: ${JSON.stringify(body)}`)
+
+        return body as ProductsList
     }
 }
