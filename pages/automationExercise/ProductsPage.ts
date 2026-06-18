@@ -69,4 +69,10 @@ export class ProductsPage {
         await this.acceptCookiesIfPresent();
         await this.searchButton.click();
     }
+
+    async addProductToCartAndContinueShopping(index: number) {
+        await this.goto();
+        await this.hoverProductAndAddToCart(index);
+        await this.clickContinueShoppingLink();
+    }
 }

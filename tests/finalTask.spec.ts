@@ -130,6 +130,21 @@ test.describe('TC-SHOP', () => {
         await story('Remove product');
         await severity(Severity.NORMAL);
 
+        const productsPage = new ProductsPage(page);
+        await productsPage.addProductToCartAndContinueShopping(0);
+
+        const productName = 'Blue Top';
+
+        const cartPage = new CartPage(page);
+        await cartPage.goto();
+
+        await cartPage.assertProductVisibility(true, productName);
+        await cartPage.removeProduct(productName);
+        await cartPage.assertProductVisibility(false, productName);
+        await page.screenshot({path: 'screenshot2.png'})
+        await cartPage.assertCartIsEmpty();
+        await cartPage.assertOnPage();
+        await cartPage.assertNoErrors();
     });
 
     // TC-SHOP-005
