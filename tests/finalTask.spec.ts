@@ -8,6 +8,7 @@ import { CheckoutPage } from '../pages/automationExercise/CheckoutPage';
 import { PaymentPage } from '../pages/automationExercise/PaymentPage';
 import { PaymentConfirmationPage } from '../pages/automationExercise/PaymentConfirmationPage';
 import { label, epic, feature, story, severity, Severity } from 'allure-js-commons';
+import { ProductDetailPage } from '../pages/automationExercise/ProductDetailPage';
 
 test.describe('TC-SHOP', () => {
     // TC-SHOP-001
@@ -155,6 +156,15 @@ test.describe('TC-SHOP', () => {
         await story('View product info');
         await severity(Severity.MINOR);
 
+        const productsPage = new ProductsPage(page);
+        await productsPage.goto();
+
+        await productsPage.clickViewProduct(0);
+
+        const productDetailPage = new ProductDetailPage(page);
+        await productDetailPage.assertHeadingVisible();
+        await productDetailPage.assertProductFields();
+        await productDetailPage.assertAddToCartButtonVisible();
     });
 
     // TC-SHOP-006

@@ -9,6 +9,7 @@ export class ProductsPage {
     readonly searchButton: Locator;
     readonly acceptButton: Locator;
     readonly searchedProductsHeading: Locator;
+    readonly viewProductLink: Locator;
 
     constructor(readonly page: Page) {
         this.products = page.locator('.product-image-wrapper');
@@ -18,6 +19,7 @@ export class ProductsPage {
         this.searchButton = page.locator('#submit_search');
         this.acceptButton = page.getByRole('button', { name: /consent|accept/i, });
         this.searchedProductsHeading = page.getByRole('heading', { name: 'Searched Products' });
+        this.viewProductLink = page.getByRole('link', { name: 'View Product' });
     }
 
     // Methods
@@ -74,5 +76,11 @@ export class ProductsPage {
         await this.goto();
         await this.hoverProductAndAddToCart(index);
         await this.clickContinueShoppingLink();
+    }
+
+    async clickViewProduct(index: number) {
+        const product = await this.viewProductLink.nth(index);
+        await this.acceptCookiesIfPresent();
+        await product.click();
     }
 }
