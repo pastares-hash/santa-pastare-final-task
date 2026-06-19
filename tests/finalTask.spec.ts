@@ -232,13 +232,22 @@ test.describe('TC-SHOP', () => {
     });
 
     // TC-SHOP-009
-    test('Subscription: subscribing from the footer shows a success message', async ({ page, request }) => {
+    test('Subscription: subscribing from the footer shows a success message', async ({ page }) => {
         await label('Priority', 'P2');
         await epic('Marketing');
         await feature('Newsletter');
         await story('Footer subscription');
         await severity(Severity.MINOR);
-        
+
+        const email = 'test@email.com';
+
+        const homePage = new ShopHomePage(page);
+        await homePage.open();
+        await homePage.scrollToSubscriptionSection();
+        await homePage.enterEmail(email);
+        await homePage.clickSubscribeButton();
+        await homePage.assertSuccessMessage();
+        await homePage.assertEmailInputEmpty();
     });
 
     // TC-SHOP-010
@@ -248,7 +257,7 @@ test.describe('TC-SHOP', () => {
         await feature('Session');
         await story('Redirect logged-in user');
         await severity(Severity.MINOR);
-    
+
     });
 });
 
