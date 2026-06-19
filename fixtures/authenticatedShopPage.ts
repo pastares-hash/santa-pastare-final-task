@@ -5,12 +5,12 @@ import {
   Title,
 } from '../pages/automationExercise/AccountCreationPage';
 import { ShopHomePage } from '../pages/automationExercise/ShopHomePage';
-
-type TestUser = ReturnType<typeof generateUser>;
+import { ShopApiClient } from '../utils/shopApiClient';
+import { ShopUser } from '../models/ShopUser';
 
 export type AuthenticatedShopPageFixture = {
   authenticatedShopPage: Page;
-  user: TestUser;
+  user: ShopUser;
 };
 
 export const test = base.extend<AuthenticatedShopPageFixture>({
@@ -18,7 +18,7 @@ export const test = base.extend<AuthenticatedShopPageFixture>({
     await use(generateUser());
   },
 
-  authenticatedShopPage: async ({ browser, user }, use) => {
+  authenticatedShopPage: async ({ browser, user, request }, use) => {
     const page = await browser.newPage();
 
     const signUpLoginPage = new SignupLoginPage(page);
@@ -58,12 +58,15 @@ export const test = base.extend<AuthenticatedShopPageFixture>({
     await homePage.assertLoggedInUsername(user.name);
 
     await use(page);
+    
+    const apiClient = new ShopApiClient(request);
+    await apiClient.deleteAccount(user.email, user.password);
 
     await page.close();
   },
 });
 
-function generateUser() {
+function generateUser(): ShopUser {
   const timestamp = Date.now();
 
   return {
@@ -74,9 +77,11 @@ function generateUser() {
     birthYear: '2020',
     name: `tester${timestamp}`,
     email: `${timestamp}@example.com`,
+    company: '',
     firstName: 'Paul',
     lastName: 'Jackson',
     address: '158 Eaton Dr',
+    address2: '',
     state: 'Colorado',
     country: 'United States',
     city: 'Pagosa Springs',

@@ -53,7 +53,6 @@ export class CartPage extends BaseShopPage {
 
     async assertProductVisibility(visible: boolean, productName: string) {
         const row = await this.cartProducts.filter({ hasText: productName });
-        this.page.screenshot({path: 'screenshot.png'})
         if (visible == true) {
             expect(row).toBeVisible();
         } else {

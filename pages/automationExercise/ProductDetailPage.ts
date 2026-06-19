@@ -27,7 +27,7 @@ export class ProductDetailPage extends BaseShopPage {
 
     // Methods
     async assertOnPage() {
-        await expect(this.page).toHaveURL('/\/product_details\/\d+$/');
+        await expect(this.page).toHaveURL(/\/product_details\/\d+$/);
     }
     
     async assertHeadingVisible() {

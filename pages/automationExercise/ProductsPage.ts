@@ -58,12 +58,10 @@ export class ProductsPage extends BaseShopPage {
     }
 
     async clickViewCartLink() {
-        await this.page.screenshot({path: 'screenshot.png'})
         await this.viewCartLink.click();
     }
 
     async clickContinueShoppingLink() {
-        await this.page.screenshot({path:'screenshot.png'})
         await this.continueShoppingButton.click();
     }
 

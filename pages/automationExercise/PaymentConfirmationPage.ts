@@ -13,7 +13,7 @@ export class PaymentConfirmationPage extends BaseShopPage {
 
     // Methods
     async assertOnPage() {
-        await expect(this.page).toHaveURL('/\/payment_done\/\d+$/');
+        await expect(this.page).toHaveURL(/\/payment_done\/\d+$/);
     }
     
     async assertOderPlaced() {
