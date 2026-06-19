@@ -27,12 +27,6 @@ export class ProductsPage extends BaseShopPage {
 
     // Methods
     async goto() {
-        this.page.on('response', response => {
-            if (response.url().includes('product')) {
-            console.log('API:', response.url());
-            }
-        });
-
         await this.page.goto('/products');
     }
 
