@@ -27,6 +27,12 @@ export class ProductsPage extends BaseShopPage {
 
     // Methods
     async goto() {
+        this.page.on('response', response => {
+            if (response.url().includes('product')) {
+            console.log('API:', response.url());
+            }
+        });
+
         await this.page.goto('/products');
     }
 
@@ -55,6 +61,7 @@ export class ProductsPage extends BaseShopPage {
         await product.hover();
         const overlay = product.locator('.product-overlay');
         await overlay.locator('.add-to-cart').click();
+        await expect(this.page.locator('#cartModal')).toBeVisible();
     }
 
     async clickViewCartLink() {

@@ -49,6 +49,12 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
     },
 
+    {
+      name: 'automation-exercise',
+      use: { baseURL: 'https://automationexercise.com' },
+      testMatch: '**/finalTask.spec.ts'
+    },
+
     /* Test against mobile viewports. */
     // {
     //   name: 'Mobile Chrome',

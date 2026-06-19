@@ -104,7 +104,6 @@ test.describe('TC-SHOP', () => {
 
         await productPage.searchProduct('dress');
         await productPage.assertSearchedProductsHeadingVisible();
-        await page.screenshot({ path: 'screenshot.png' })
         await productPage.assertAllProductsContainText('dress');
     });
 
@@ -142,7 +141,6 @@ test.describe('TC-SHOP', () => {
         await severity(Severity.NORMAL);
 
         const productsPage = new ProductsPage(page);
-        await productsPage.assertOnPage();
         await productsPage.addProductToCartAndContinueShopping(0);
 
         const productName = 'Blue Top';
@@ -154,7 +152,6 @@ test.describe('TC-SHOP', () => {
         await cartPage.assertProductVisibility(true, productName);
         await cartPage.removeProduct(productName);
         await cartPage.assertProductVisibility(false, productName);
-        await page.screenshot({path: 'screenshot2.png'})
         await cartPage.assertCartIsEmpty();
         await cartPage.assertOnPage();
         await cartPage.assertNoErrors();
@@ -190,7 +187,7 @@ test.describe('TC-SHOP', () => {
         await severity(Severity.CRITICAL);
 
         const shopApiClient = new ShopApiClient(request);
-        const productsList = await shopApiClient.getAllProducts();
+        const productsList = await shopApiClient.getProducts();
 
         expect(productsList.responseCode).toBe(200);
 
@@ -219,7 +216,7 @@ test.describe('TC-SHOP', () => {
         await severity(Severity.NORMAL);
 
         const shopApiClient = new ShopApiClient(request);
-        const searchProducts = await shopApiClient.searchProduct('top');
+        const searchProducts = await shopApiClient.searchProducts('top');
 
         expect(searchProducts.responseCode).toBe(200);
         expect(searchProducts.products.length).toBeGreaterThan(0);
@@ -238,7 +235,7 @@ test.describe('TC-SHOP', () => {
         await severity(Severity.MINOR);
     
         const shopApiClient = new ShopApiClient(request);
-        const searchProducts = await shopApiClient.searchProduct();
+        const searchProducts = await shopApiClient.searchProducts();
 
         expect(searchProducts.responseCode).toBe(400);
         expect(searchProducts.message).toContain('Bad request, search_product parameter is missing in POST request');

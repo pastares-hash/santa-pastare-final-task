@@ -61,7 +61,7 @@ export class CartPage extends BaseShopPage {
     }
 
     async assertCartIsEmpty() {
-        await expect(this.cartProducts).toHaveCount(0);
+        await expect.poll(async () => { return await this.cartProducts.count(); }).toBe(0);
         expect(this.emptyCartMessage).toContainText('Cart is empty!');
     }
 
