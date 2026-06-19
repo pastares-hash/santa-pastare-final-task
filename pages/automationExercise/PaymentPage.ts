@@ -1,6 +1,7 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
+import { BaseShopPage } from "./BaseShopPage";
 
-export class PaymentPage {
+export class PaymentPage extends BaseShopPage {
     // Locators
     readonly nameOnCardInput: Locator;
     readonly cardNumberInput: Locator;
@@ -9,7 +10,9 @@ export class PaymentPage {
     readonly expirationYearInput: Locator;
     readonly payAndConfirmButton: Locator;
 
-    constructor(readonly page: Page) {
+    constructor(page: Page) {
+        super(page);
+
         this.nameOnCardInput = page.locator('input[name="name_on_card"]');
         this.cardNumberInput = page.locator('input[name="card_number"]')
         this.cvcInput = page.getByRole('textbox', { name: 'ex.' });
@@ -19,6 +22,10 @@ export class PaymentPage {
     }
 
     // Methods
+    async assertOnPage() {
+        await expect(this.page).toHaveURL('/payment');
+    }
+        
     async fillCardDetails(name: string, cardNumber: string, cvc: string, month: string, year: string) {
         await this.nameOnCardInput.fill(name);
         await this.cardNumberInput.fill(cardNumber);

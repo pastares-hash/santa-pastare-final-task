@@ -1,18 +1,21 @@
 import { expect, Locator, Page } from "@playwright/test";
+import { BaseShopPage } from "./BaseShopPage";
 
-export class CartPage {
+export class CartPage extends BaseShopPage {
     // Locators
     readonly proceedToCheckoutButton: Locator;
     readonly cartProducts: Locator;
     readonly cartTotal: Locator;
-    readonly cartTitle: Locator;
+    readonly pageTitle: Locator;
     readonly emptyCartMessage: Locator;
 
-    constructor(readonly page: Page) {
+    constructor(page: Page) {
+        super(page);
+
         this.proceedToCheckoutButton = page.getByText('Proceed To Checkout');
         this.cartProducts = page.locator('tr[id^="product-"]');
         this.cartTotal = page.locator('.cart_total_price');
-        this.cartTitle = page.getByText('Shopping Cart')
+        this.pageTitle = page.getByText('Shopping Cart')
         this.emptyCartMessage = page.locator('#empty_cart');
     }
 
@@ -22,7 +25,8 @@ export class CartPage {
     }
 
     async assertOnPage() {
-        await expect(this.cartTitle).toBeVisible();
+        await expect(this.page).toHaveURL('/view_cart');
+        await expect(this.pageTitle).toBeVisible();
     }
 
     async assertProductCount(count: number) {

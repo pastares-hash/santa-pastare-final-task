@@ -1,6 +1,7 @@
 import { expect, Locator, Page } from "@playwright/test";
+import { BaseShopPage } from "./BaseShopPage";
 
-export class ProductsPage {
+export class ProductsPage extends BaseShopPage {
     // Locators
     readonly products: Locator;
     readonly viewCartLink: Locator;
@@ -11,7 +12,9 @@ export class ProductsPage {
     readonly searchedProductsHeading: Locator;
     readonly viewProductLink: Locator;
 
-    constructor(readonly page: Page) {
+    constructor(page: Page) {
+        super(page);
+
         this.products = page.locator('.product-image-wrapper');
         this.viewCartLink = page.getByRole('link', { name: 'View Cart' });
         this.continueShoppingButton = page.getByRole('button', { name: 'Continue Shopping' });
@@ -27,10 +30,8 @@ export class ProductsPage {
         await this.page.goto('/products');
     }
 
-    private async acceptCookiesIfPresent() {
-        if (await this.acceptButton.isVisible().catch(() => false)) {
-            await this.acceptButton.click();
-        }
+    async assertOnPage() {
+        await expect(this.page).toHaveURL('/products');
     }
 
     async assertSearchedProductsHeadingVisible() {

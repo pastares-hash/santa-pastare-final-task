@@ -1,11 +1,12 @@
 import { expect, Locator, Page } from "@playwright/test";
+import { BaseShopPage } from "./BaseShopPage";
 
 export enum Title {
     Mr = 'Mr',
     Mrs = 'Mrs',
 }
 
-export class AccountCreationPage {
+export class AccountCreationPage extends BaseShopPage {
     // Locators
     readonly mrRadio: Locator
     readonly mrsRadio: Locator
@@ -27,7 +28,9 @@ export class AccountCreationPage {
     readonly accountCreatedHeading: Locator;
     readonly continueButton: Locator;
 
-    constructor(readonly page: Page) {
+    constructor(page: Page) {
+        super(page);
+
         this.mrRadio = page.getByLabel('Mr.');
         this.mrsRadio = page.getByLabel('Mrs.');
         // this.nameInput = page.getByLabel('Name');
@@ -50,8 +53,8 @@ export class AccountCreationPage {
     }
 
     // Methods
-    async assertNavigatedOnPage() {
-        await this.page.waitForURL(/signup/);
+    async assertOnPage() {
+        await expect(this.page).toHaveURL('/signup');
     }
 
     async assertAccountCreated(page: Page) {

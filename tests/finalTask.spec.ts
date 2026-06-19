@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { ShopHomePage } from '../pages/automationExercise/ShopHomePage';
 import { SignupLoginPage } from '../pages/automationExercise/SignupLoginPage';
 import { AccountCreationPage, Title } from '../pages/automationExercise/AccountCreationPage';
@@ -10,6 +10,7 @@ import { PaymentConfirmationPage } from '../pages/automationExercise/PaymentConf
 import { label, epic, feature, story, severity, Severity } from 'allure-js-commons';
 import { ProductDetailPage } from '../pages/automationExercise/ProductDetailPage';
 import { ShopApiClient } from '../utils/shopApiClient';
+import { test } from "../fixtures/authenticatedShopPage";
 
 test.describe('TC-SHOP', () => {
     // TC-SHOP-001
@@ -33,15 +34,16 @@ test.describe('TC-SHOP', () => {
 
         const homePage = new ShopHomePage(page);
         await homePage.open();
-        await homePage.assertOnHomePage();
+        await homePage.assertOnPage();
 
         homePage.clickSignupLoginLink();
 
         const signupLoginPage = new SignupLoginPage(page);
+        await signupLoginPage.assertOnPage();
         await signupLoginPage.signUp(name, email);
 
         const accountCreationPage = new AccountCreationPage(page);
-        await accountCreationPage.assertNavigatedOnPage();
+        await accountCreationPage.assertOnPage();
         await accountCreationPage.createAccount(
             Title.Mr,
             'pass',
@@ -65,11 +67,13 @@ test.describe('TC-SHOP', () => {
 
         const productPage = new ProductsPage(page);
         await productPage.goto();
+        await productPage.assertOnPage();
 
         await productPage.hoverProductAndAddToCart(1);
         await productPage.clickViewCartLink();
 
         const cartPage = new CartPage(page);
+        await cartPage.assertOnPage();
         await cartPage.clickProceedToCheckoutButton();
 
         const checkoutPage = new CheckoutPage(page);
@@ -77,10 +81,12 @@ test.describe('TC-SHOP', () => {
         await checkoutPage.clickPlaceOrderButton();
 
         const paymentPage = new PaymentPage(page);
+        await paymentPage.assertOnPage();
         await paymentPage.fillCardDetails(firstName, lastName, '123', '04', '2027');
         await paymentPage.clickPayAndConfirmButton();
 
         const paymentConfirmationPage = new PaymentConfirmationPage(page);
+        await paymentConfirmationPage.assertOnPage();
         await paymentConfirmationPage.assertOderPlaced(); 
     });
 
@@ -94,6 +100,7 @@ test.describe('TC-SHOP', () => {
 
         const productPage = new ProductsPage(page);
         await productPage.goto();
+        await productPage.assertOnPage();
 
         await productPage.searchProduct('dress');
         await productPage.assertSearchedProductsHeadingVisible();
@@ -111,6 +118,7 @@ test.describe('TC-SHOP', () => {
 
         const productPage = new ProductsPage(page);
         await productPage.goto();
+        await productPage.assertOnPage();
 
         await productPage.hoverProductAndAddToCart(0);
         await productPage.clickContinueShoppingLink();
@@ -118,6 +126,7 @@ test.describe('TC-SHOP', () => {
         await productPage.clickViewCartLink();
 
         const cartPage = new CartPage(page);
+        await cartPage.assertOnPage();
         await cartPage.assertProductCount(2);
         await cartPage.assertProductDetails('Blue Top', 500, 1, 500);
         await cartPage.assertProductDetails('Men Tshirt', 400, 1, 400);
@@ -133,12 +142,14 @@ test.describe('TC-SHOP', () => {
         await severity(Severity.NORMAL);
 
         const productsPage = new ProductsPage(page);
+        await productsPage.assertOnPage();
         await productsPage.addProductToCartAndContinueShopping(0);
 
         const productName = 'Blue Top';
 
         const cartPage = new CartPage(page);
         await cartPage.goto();
+        await cartPage.assertOnPage();
 
         await cartPage.assertProductVisibility(true, productName);
         await cartPage.removeProduct(productName);
@@ -159,10 +170,12 @@ test.describe('TC-SHOP', () => {
 
         const productsPage = new ProductsPage(page);
         await productsPage.goto();
+        await productsPage.assertOnPage();
 
         await productsPage.clickViewProduct(0);
 
         const productDetailPage = new ProductDetailPage(page);
+        await productDetailPage.assertOnPage();
         await productDetailPage.assertHeadingVisible();
         await productDetailPage.assertProductFields();
         await productDetailPage.assertAddToCartButtonVisible();
@@ -243,6 +256,7 @@ test.describe('TC-SHOP', () => {
 
         const homePage = new ShopHomePage(page);
         await homePage.open();
+        await homePage.assertOnPage();
         await homePage.scrollToSubscriptionSection();
         await homePage.enterEmail(email);
         await homePage.clickSubscribeButton();
@@ -251,13 +265,20 @@ test.describe('TC-SHOP', () => {
     });
 
     // TC-SHOP-010
-    test(' Session: authenticated user is redirected away from the login page', async ({ page, request }) => {
+    test(' Session: authenticated user is redirected away from the login page', async ({ authenticatedShopPage, user }) => {
         await label('Priority', 'P2');
         await epic('Auth');
         await feature('Session');
         await story('Redirect logged-in user');
         await severity(Severity.MINOR);
 
+        const loginPage = new SignupLoginPage(authenticatedShopPage);
+        await loginPage.goto();
+
+        await authenticatedShopPage.waitForURL('/');
+
+        const homePage = new ShopHomePage(authenticatedShopPage);
+        await homePage.assertOnPage();
+        await homePage.assertNavBarUsername(user.name);
     });
 });
-

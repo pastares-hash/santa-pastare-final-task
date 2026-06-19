@@ -1,16 +1,23 @@
 import { expect, Locator, Page } from "@playwright/test";
+import { BaseShopPage } from "./BaseShopPage";
 
-export class CheckoutPage {
+export class CheckoutPage extends BaseShopPage {
     // Locators
     readonly address: Locator;
     readonly placeOrderLink: Locator;
 
-    constructor(readonly page: Page) {
+    constructor(page: Page) {
+        super(page);
+
         this.address = page.locator('#address_delivery');
         this.placeOrderLink = page.getByRole('link', { name: 'Place Order' });
     }
 
     // Methods
+    async assertOnPage() {
+        await expect(this.page).toHaveURL('/checkout');
+    }
+
     async assertAddress(address: string, state: string, city: string, zipCode: string, country: string, ) {
         const addressLine = this.address.locator('li.address_address1.address_address2')
         .filter({ hasText: /.+/ });

@@ -1,6 +1,7 @@
 import { expect, Locator, Page } from "@playwright/test";
+import { BaseShopPage } from "./BaseShopPage";
 
-export class ProductDetailPage {
+export class ProductDetailPage extends BaseShopPage {
     // Locators
     readonly productInfo: Locator;
     readonly heading: Locator;
@@ -11,7 +12,9 @@ export class ProductDetailPage {
     readonly brandField: Locator;
     readonly addToCartButton: Locator;
 
-    constructor(readonly page: Page) {
+    constructor(page: Page) {
+        super(page);
+
         this.productInfo = page.locator('.product-information');
         this.heading = this.productInfo.getByRole('heading', { level: 2 });
         this.categoryField = page.locator('p', { hasText: 'Category:' });
@@ -23,6 +26,10 @@ export class ProductDetailPage {
     }
 
     // Methods
+    async assertOnPage() {
+        await expect(this.page).toHaveURL('/\/product_details\/\d+$/');
+    }
+    
     async assertHeadingVisible() {
         await expect(this.heading).toBeVisible();
     }
